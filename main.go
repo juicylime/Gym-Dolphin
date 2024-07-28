@@ -6,6 +6,7 @@ import (
 	"strconv"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 // Define a struct to represent the request payload
@@ -77,8 +78,33 @@ func routes(e *echo.Echo) {
 	e.GET("/order_packs", orderPacks)
 }
 
+// Serve the react build
+func serveReactApp(e *echo.Echo) {
+	// Serve static files
+	e.Static("/static", "gym-dolphin/build/static")
+	e.File("/", "gym-dolphin/build/index.html")
+	e.File("/favicon.ico", "gym-dolphin/build/favicon.ico")
+	e.File("/manifest.json", "gym-dolphin/build/manifest.json")
+	e.File("/logo192.png", "gym-dolphin/build/logo192.png")
+	e.File("/logo512.png", "gym-dolphin/build/logo512.png")
+	e.File("/robots.txt", "gym-dolphin/build/robots.txt")
+
+	// Serve index.html for any other routes except for known static files
+	e.File("/*", "gym-dolphin/build/index.html")
+}
+
 func main() {
 	e := echo.New()
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:3000", "https://gym-dolphin.onrender.com"},
+		AllowMethods: []string{echo.GET, echo.HEAD, echo.PUT, echo.PATCH, echo.POST, echo.DELETE},
+	}))
+
 	routes(e)
-	e.Start(":8080")
+	serveReactApp(e)
+
+	e.Logger.Fatal(e.Start(":8080"))
 }
