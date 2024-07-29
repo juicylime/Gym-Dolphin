@@ -2,8 +2,6 @@ import './App.css';
 import ProductPage from './components/ProductPage.js';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
-
-
 function App() {
   return (
     <div className="App">
