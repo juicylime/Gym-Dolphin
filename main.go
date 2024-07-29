@@ -88,6 +88,7 @@ func serveReactApp(e *echo.Echo) {
 	e.File("/logo192.png", "gym-dolphin/build/logo192.png")
 	e.File("/logo512.png", "gym-dolphin/build/logo512.png")
 	e.File("/robots.txt", "gym-dolphin/build/robots.txt")
+	e.File("/white_shirt.jpg", "gym-dolphin/build/white_shirt.jpg")
 
 	// Serve index.html for any other routes except for known static files
 	e.File("/*", "gym-dolphin/build/index.html")
